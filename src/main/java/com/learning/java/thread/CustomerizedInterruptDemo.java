@@ -11,7 +11,7 @@ import sun.nio.ch.Interruptible;
 public class CustomerizedInterruptDemo {
 	public static void main(String[] args) throws InterruptedException {
 		Interruptible interruptible = (t) -> System.out.println(t.getName() + "被中断");
-		Thread thread = new Thread(() -> {
+		Thread t1 = new Thread(() -> {
 			/**
 			 * 设置Thread的block属性为interruptible
 			 * {@link Thread#blockedOn(Interruptible)}
@@ -27,15 +27,17 @@ public class CustomerizedInterruptDemo {
 				}
 			}
 		}, "Thread1");
-		thread.start();
+
+		t1.start();
 		// 50ms后打断线程
 		Thread.sleep(50);
 		// main线程打断thread1线程
-		thread.interrupt();
+		//t1.interrupt();
+
 		// main线程等待thread1执行完毕
-		thread.join();
+		t1.join();
 		System.out.println("全部完成");
-		System.out.println(VM.isBooted());
+		//System.out.println(VM.isBooted());
 	}
 
 	static void blockedOn(Interruptible interruptible) {         // package-private

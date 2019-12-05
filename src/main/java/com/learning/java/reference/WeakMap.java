@@ -2,7 +2,9 @@ package com.learning.java.reference;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +23,7 @@ public class WeakMap<K, V> extends HashMap<K, V> {
 		Entry<K, V> entry = new Entry<>(key, value, rq);
 		handleSize();
 		map.put(entry.getKey(), entry);
+		System.out.println("put:" + key);
 		return entry.get();
 	}
 
@@ -56,6 +59,13 @@ public class WeakMap<K, V> extends HashMap<K, V> {
 		public K getKey() {
 			return key;
 		}
+
+		@Override
+		public String toString() {
+			return "Entry{" +
+					"key=" + key +
+					'}';
+		}
 	}
 
 	public static void main(String[] args) {
@@ -66,9 +76,35 @@ public class WeakMap<K, V> extends HashMap<K, V> {
 			wm.put(i, bytes);
 		}
 		System.out.println("Map size is: " + wm.size());
-		//System.out.println("Map get 999: " + new String(wm.get(999)));
-
+		//test2();
 	}
 
-	//WeakMap<Integer, byte[]> wm = new WeakMap<>();
+	private static void test2() {
+		List<Entry> list = new ArrayList<>();
+		int _1M = 1024 * 1024;
+		for (int i = 0; i < 50; i++) {
+			//Integer value = new Integer(1111);
+			byte[] bytes = new byte[_1M];
+			list.add(put(i, bytes));
+			/*try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}*/
+		}
+	}
+
+	private static Entry put(int i, byte[] bytes) {
+		Entry entry = new Entry(i, bytes, rq);
+		Entry remove;
+		System.out.println("GC前 i: " + i + ", value: " + entry.get());
+		System.gc();
+		System.out.println("执行System.gc()");
+		for (; (remove = (Entry) rq.poll()) != null; ) {
+			System.out.println("回收了:" + remove);
+			remove.key = null;
+		}
+		System.out.println("GC后 i: " + i + ", value: " + entry.get());
+		return entry;
+	}
 }
