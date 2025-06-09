@@ -1,6 +1,6 @@
 package com.learning.java.javatools;
 
-import sun.tools.attach.WindowsVirtualMachine;
+import sun.tools.attach.HotSpotVirtualMachine;
 
 import java.io.IOException;
 
@@ -13,6 +13,6 @@ import java.io.IOException;
  */
 public class ToolsDemo {
 	public static void main(String[] args) throws IOException {
-		WindowsVirtualMachine.list().forEach(System.out::println);
+		HotSpotVirtualMachine.list().forEach(System.out::println);
 	}
 }
